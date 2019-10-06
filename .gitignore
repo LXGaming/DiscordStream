@@ -44,6 +44,7 @@ run
 *.zip
 
 # Project
+obj/
 .classpath
 .externalToolBuilders
 .gradle
@@ -58,6 +59,7 @@ build.xml
 local.properties
 nb-configuration.xml
 nbproject
+*.DotSettings.user
 *.iml
 *.ipr
 *.iws
