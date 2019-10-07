@@ -15,6 +15,7 @@ namespace LXGaming.DiscordStream.Integration.Twitch {
             CreateTwitchApi(twitchIntegrationCategory.Id, twitchIntegrationCategory.Token);
 
             foreach (var channel in twitchIntegrationCategory.Channels) {
+                DiscordStream.Instance.Logger.Info("Subscribing to {}", channel);
                 TwitchApi.Helix.Webhooks.StreamUpDownAsync(
                     config.WebCategory.StreamCallback + "?user_id=" + channel,
                     WebhookCallMode.Subscribe,
