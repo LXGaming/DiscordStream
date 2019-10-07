@@ -1,4 +1,5 @@
 ﻿using System;
+using LXGaming.DiscordStream.Manager;
 
 namespace LXGaming.DiscordStream {
 
@@ -13,6 +14,8 @@ namespace LXGaming.DiscordStream {
 
         private static void Shutdown(object sender, EventArgs args) {
             DiscordStream.Instance?.State.Set();
+
+            AccountManager.DiscordClient.Dispose();
         }
     }
 }
