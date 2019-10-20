@@ -16,12 +16,16 @@ namespace LXGaming.DiscordStream.Integration.Twitch {
             CreateTwitchApi(twitchIntegrationCategory.Id, twitchIntegrationCategory.Token);
 
             Task.Run(() => {
-                var duration = TimeSpan.FromHours(72);
-                while (true) {
-                    Subscribe(duration);
-                    if (DiscordStream.Instance.State.WaitOne(duration, false)) {
-                        break;
+                try {
+                    var duration = TimeSpan.FromHours(72);
+                    while (true) {
+                        Subscribe(duration);
+                        if (DiscordStream.Instance.State.WaitOne(duration, false)) {
+                            break;
+                        }
                     }
+                } catch (Exception ex) {
+                    DiscordStream.Instance.Logger.Warn("Encountered an error during subscribe task", ex);
                 }
             });
         }
