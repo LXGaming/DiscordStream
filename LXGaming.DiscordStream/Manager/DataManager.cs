@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LXGaming.DiscordStream.Integration.Twitch;
+using LXGaming.DiscordStream.Util;
 using TwitchLib.Api.Helix.Models.Users;
 
 namespace LXGaming.DiscordStream.Manager {
@@ -27,7 +28,7 @@ namespace LXGaming.DiscordStream.Manager {
             }
 
             foreach (var game in games.Games) {
-                TwitchGameCache.Add(Convert.ToInt64(game.Id), game.Name);
+                Toolbox.Put(TwitchGameCache, Convert.ToInt64(game.Id), game.Name);
             }
 
             return GetCachedGame(gameId);
@@ -49,7 +50,7 @@ namespace LXGaming.DiscordStream.Manager {
             }
 
             foreach (var user in users.Users) {
-                TwitchUserCache.Add(Convert.ToInt64(user.Id), user);
+                Toolbox.Put(TwitchUserCache, Convert.ToInt64(user.Id), user);
             }
 
             return GetCachedUser(userId);

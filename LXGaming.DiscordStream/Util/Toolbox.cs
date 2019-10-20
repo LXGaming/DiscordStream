@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -82,6 +83,13 @@ namespace LXGaming.DiscordStream.Util {
             }
 
             return plural;
+        }
+
+        public static TValue Put<TKey, TValue>(Dictionary<TKey, TValue> dictionary, TKey key, TValue value) {
+            var previousValue = dictionary.GetValueOrDefault(key);
+            dictionary.Remove(key);
+            dictionary.Add(key, value);
+            return previousValue;
         }
 
         public static T NewInstance<T>() {

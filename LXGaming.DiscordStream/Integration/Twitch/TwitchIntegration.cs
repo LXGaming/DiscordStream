@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LXGaming.DiscordStream.Manager;
+using LXGaming.DiscordStream.Util;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 
@@ -43,9 +44,7 @@ namespace LXGaming.DiscordStream.Integration.Twitch {
             }
 
             foreach (var user in users.Users) {
-                var userId = Convert.ToInt64(user.Id);
-                DataManager.TwitchUserCache.Remove(userId);
-                DataManager.TwitchUserCache.Add(userId, user);
+                Toolbox.Put(DataManager.TwitchUserCache, Convert.ToInt64(user.Id), user);
 
                 DiscordStream.Instance.Logger.Info("Subscribing to {} ({})", user.Login, user.Id);
                 TwitchApi.Helix.Webhooks.StreamUpDownAsync(
