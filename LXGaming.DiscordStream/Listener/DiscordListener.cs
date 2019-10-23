@@ -50,7 +50,7 @@ namespace LXGaming.DiscordStream.Listener {
             }
 
             // Fixes issue where command is not found when the prefix and actual command are separated by a space
-            if (message.Content.Length >= argumentPosition && message.Content[argumentPosition] == ' ') {
+            if (message.Content.Length > argumentPosition && message.Content[argumentPosition] == ' ') {
                 argumentPosition++;
             }
 
