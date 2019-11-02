@@ -16,6 +16,7 @@ namespace LXGaming.DiscordStream.Server.Controller {
         public const string TwitchUrl = "https://www.twitch.tv/";
         public static readonly Dictionary<long, string> CurrentGames = new Dictionary<long, string>();
         public static readonly Dictionary<long, string> CurrentTitles = new Dictionary<long, string>();
+        public static readonly Dictionary<long, long> StartTimes = new Dictionary<long, long>();
 
         [TwitchWebHook(Id = "followers")]
         public IActionResult Follow([FromBody] Follower follower) {
@@ -69,11 +70,19 @@ namespace LXGaming.DiscordStream.Server.Controller {
                 }
 
                 if (streamData.Data.Count == 0) {
+                    var startTime = StartTimes.GetValueOrDefault(userIdLong);
+
                     CurrentGames.Remove(userIdLong);
                     CurrentTitles.Remove(userIdLong);
+                    StartTimes.Remove(userIdLong);
 
                     embedBuilder.WithColor(MessageManager.GetColor(Color.Error));
                     embedBuilder.WithDescription("is now offline");
+                    if (startTime != 0) {
+                        embedBuilder.Description += " after streaming for ";
+                        embedBuilder.Description += Toolbox.GetTimeString(DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
+                    }
+
                     embedBuilder.WithTimestamp(DateTime.Now);
                     embedBuilder.WithFooter("Powered by " + Reference.Name);
                     MessageManager.SendMessageAsync(channel, embedBuilder.Build()).Wait();
@@ -121,6 +130,7 @@ namespace LXGaming.DiscordStream.Server.Controller {
 
                 CurrentGames.TryAdd(userIdLong, stream.GameId);
                 CurrentTitles.TryAdd(userIdLong, stream.Title);
+                StartTimes.TryAdd(userIdLong, DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
                 embedBuilder.WithColor(MessageManager.GetColor(Color.Success));
                 embedBuilder.WithDescription("is currently live streaming [**" + stream.Title + "**](" + userUrl + ")");
