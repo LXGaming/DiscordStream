@@ -45,7 +45,7 @@ namespace LXGaming.DiscordStream.Listener {
             }
 
             var argumentPosition = 0;
-            if (!message.HasStringPrefix(config.GeneralCategory.CommandPrefix, ref argumentPosition) && !message.HasCharPrefix('/', ref argumentPosition)) {
+            if (!message.HasStringPrefix(config.GeneralCategory.CommandPrefix, ref argumentPosition)) {
                 return;
             }
 
