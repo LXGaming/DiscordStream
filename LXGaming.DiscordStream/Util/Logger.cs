@@ -90,7 +90,7 @@ namespace LXGaming.DiscordStream.Util {
             public static readonly Level Warn = new Level(2, "WARN");
             public static readonly Level Info = new Level(3, "INFO");
             public static readonly Level Debug = new Level(4, "DEBUG");
-            public static readonly Level All = new Level(5, "INFO");
+            public static readonly Level All = new Level(5, "ALL");
 
             public readonly int Id;
             public readonly string Name;
