@@ -8,11 +8,21 @@ using LXGaming.DiscordStream.Util;
 namespace LXGaming.DiscordStream {
 
     public class DiscordStream {
+        
+        public const string Id = "discordstream";
+        public const string Name = "DiscordStream";
+        public const string Version = "1.1.0";
+        public const string Authors = "LX_Gaming";
+        public const string Source = "https://github.com/LXGaming/DiscordStream";
+        public const string Website = "https://lxgaming.github.io/";
+        
+        // https://www.keycdn.com/blog/web-crawlers
+        public const string UserAgent = Name + "/" + Version + "; (+" + Website + ")";
 
         public static DiscordStream Instance { get; private set; }
         public readonly ManualResetEvent State;
         public readonly Logger Logger;
-        public readonly Configuration.Configuration Configuration;
+        public readonly IConfiguration Configuration;
 
         public Config Config => Configuration.Config;
 
@@ -20,7 +30,7 @@ namespace LXGaming.DiscordStream {
             Instance = this;
             State = new ManualResetEvent(false);
             Logger = new Logger();
-            Configuration = new Configuration.Configuration(Directory.GetCurrentDirectory());
+            Configuration = new JsonConfiguration(Directory.GetCurrentDirectory());
         }
 
         public void Load() {
@@ -38,7 +48,7 @@ namespace LXGaming.DiscordStream {
 
             Configuration.SaveConfiguration();
 
-            Logger.Info("{} v{} has loaded", Reference.Name, Reference.Version);
+            Logger.Info("{} v{} has loaded", Name, Version);
             State.WaitOne();
         }
 
@@ -49,6 +59,12 @@ namespace LXGaming.DiscordStream {
             }
 
             Configuration.SaveConfiguration();
+            ReloadLogger();
+
+            return true;
+        }
+
+        public void ReloadLogger() {
             if (Config.GeneralCategory.Debug) {
                 Logger.LoggerLevel = Logger.Level.Debug;
                 Logger.Debug("Debug mode enabled");
@@ -56,8 +72,6 @@ namespace LXGaming.DiscordStream {
                 Logger.LoggerLevel = Logger.Level.Info;
                 Logger.Info("Debug mode disabled");
             }
-
-            return true;
         }
     }
 }

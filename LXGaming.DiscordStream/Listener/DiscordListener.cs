@@ -1,10 +1,11 @@
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LXGaming.DiscordStream.Manager;
 using LXGaming.DiscordStream.Util;
-using Color = LXGaming.DiscordStream.Data.Color;
+using Color = LXGaming.DiscordStream.Entity.Color;
 
 namespace LXGaming.DiscordStream.Listener {
 
@@ -27,7 +28,7 @@ namespace LXGaming.DiscordStream.Listener {
             }
 
             foreach (var guild in AccountManager.DiscordClient.Guilds) {
-                PermissionManager.Register(guild);
+                GuildManager.Register(guild);
             }
 
             return Task.CompletedTask;
@@ -54,26 +55,40 @@ namespace LXGaming.DiscordStream.Listener {
                 argumentPosition++;
             }
 
+            if (config.MessageCategory.SendTyping) {
+                await message.Channel.TriggerTypingAsync();
+            }
+
             var context = new SocketCommandContext(AccountManager.DiscordClient, message);
             var result = await AccountManager.CommandService.ExecuteAsync(context, argumentPosition, null);
             if (result.IsSuccess) {
+                if (config.MessageCategory.DeleteInvoking) {
+                    await Task.Run(() => {
+                        Task.Delay(TimeSpan.FromMilliseconds(config.MessageCategory.DeleteInterval))
+                            .ContinueWith(task => message.DeleteAsync());
+                    });
+                }
+
                 return;
             }
 
             var embedBuilder = new EmbedBuilder();
             embedBuilder.WithColor(MessageManager.GetColor(Color.Error));
-            embedBuilder.WithTitle("An error has occurred. Details are available in console.");
-            embedBuilder.WithDescription(Toolbox.Filter(message.Content));
 
             if (result is ExecuteResult executeResult) {
-                DiscordStream.Instance.Logger.Error("Encountered an error while executing command", executeResult.Exception);
-                embedBuilder.WithFooter("Exception: " + executeResult.Exception.GetType().Name);
-            } else {
-                DiscordStream.Instance.Logger.Error("Encountered an error while executing command: {}", result.ErrorReason);
-                embedBuilder.WithFooter("Error: " + result.Error);
+                if (executeResult.Exception is CommandException) {
+                    embedBuilder.WithTitle("An error has occurred.");
+                    embedBuilder.WithDescription("```" + executeResult.Exception.Message + "```");
+                    embedBuilder.WithFooter("Exception: " + executeResult.Exception.GetType().FullName, "https://repo.lxgaming.me/assets/discord/error.png");
+                    MessageManager.SendMessageAsync(context.Message.Channel, embedBuilder.Build());
+                    return;
+                }
             }
 
-            await MessageManager.SendMessageAsync(message.Channel, embedBuilder.Build());
+            DiscordStream.Instance.Logger.Error("Encountered an error while executing command: {}", result.ErrorReason);
+            embedBuilder.WithTitle("An error has occurred. Details are available in console.");
+            embedBuilder.WithFooter("Error: " + result.Error);
+            MessageManager.SendMessageAsync(context.Message.Channel, embedBuilder.Build());
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using LXGaming.DiscordStream.Util;
-using Color = LXGaming.DiscordStream.Data.Color;
+using Color = LXGaming.DiscordStream.Entity.Color;
 
 namespace LXGaming.DiscordStream.Manager {
 
@@ -21,15 +21,15 @@ namespace LXGaming.DiscordStream.Manager {
             }
         }
 
-        public static async Task SendTemporaryMessageAsync(IMessageChannel channel, string text) {
-            await SendTemporaryMessageAsync(channel, text, null);
+        public static void SendTemporaryMessageAsync(IMessageChannel channel, string text) {
+            SendTemporaryMessageAsync(channel, text, null);
         }
 
-        public static async Task SendTemporaryMessageAsync(IMessageChannel channel, Embed embed) {
-            await SendTemporaryMessageAsync(channel, null, embed);
+        public static void SendTemporaryMessageAsync(IMessageChannel channel, Embed embed) {
+            SendTemporaryMessageAsync(channel, null, embed);
         }
 
-        public static async Task SendTemporaryMessageAsync(IMessageChannel channel, string text, Embed embed) {
+        public static async void SendTemporaryMessageAsync(IMessageChannel channel, string text, Embed embed) {
             try {
                 var message = await channel.SendMessageAsync(text, false, embed);
                 var messageCategory = DiscordStream.Instance.Config?.MessageCategory;
@@ -37,26 +37,25 @@ namespace LXGaming.DiscordStream.Manager {
                     return;
                 }
 
-                // TODO Figure out why this is blocking...
                 await Task.Delay(TimeSpan.FromMilliseconds(messageCategory.DeleteInterval))
                     .ContinueWith(task => message.DeleteAsync());
-            } catch (Exception ex) {
+            } catch (System.Exception ex) {
                 DiscordStream.Instance.Logger.Error("Encountered an error while sending message", ex);
             }
         }
 
-        public static async Task SendMessageAsync(IMessageChannel channel, string text) {
-            await SendMessageAsync(channel, text, null);
+        public static void SendMessageAsync(IMessageChannel channel, string text) {
+            SendMessageAsync(channel, text, null);
         }
 
-        public static async Task SendMessageAsync(IMessageChannel channel, Embed embed) {
-            await SendMessageAsync(channel, null, embed);
+        public static void SendMessageAsync(IMessageChannel channel, Embed embed) {
+            SendMessageAsync(channel, null, embed);
         }
 
-        public static async Task SendMessageAsync(IMessageChannel channel, string text, Embed embed) {
+        public static async void SendMessageAsync(IMessageChannel channel, string text, Embed embed) {
             try {
                 await channel.SendMessageAsync(text, false, embed);
-            } catch (Exception ex) {
+            } catch (System.Exception ex) {
                 DiscordStream.Instance.Logger.Error("Encountered an error while sending message", ex);
             }
         }

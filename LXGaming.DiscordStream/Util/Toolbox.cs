@@ -99,7 +99,7 @@ namespace LXGaming.DiscordStream.Util {
         public static T NewInstance<T>(Type type) {
             try {
                 return (T) Activator.CreateInstance(type);
-            } catch (Exception) {
+            } catch (System.Exception) {
                 return default;
             }
         }

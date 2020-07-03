@@ -1,13 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
+using ConcurrentCollections;
 using Discord;
 using LXGaming.DiscordStream.Configuration.Category;
+using LXGaming.DiscordStream.Configuration.Category.Guild;
 
 namespace LXGaming.DiscordStream.Manager {
 
-    public static class PermissionManager {
+    public class GuildManager {
 
         public static void Register(IGuild guild) {
-            var roleCategories = new HashSet<RoleCategory>();
+            var roleCategories = new ConcurrentHashSet<RoleCategory>();
             foreach (var role in guild.Roles) {
                 var roleCategory = GetRoleCategory(guild.Id, role.Id) ?? new RoleCategory();
                 roleCategory.Id = role.Id;
@@ -36,12 +39,12 @@ namespace LXGaming.DiscordStream.Manager {
         public static HashSet<string> GetPermissions(IGuildUser user) {
             var permissions = new HashSet<string>();
 
-            var userCategory = GetUserCategory(user);
+            var userCategory = GuildManager.GetUserCategory(user);
             if (userCategory != null) {
                 AppendPermissions(permissions, userCategory.Permissions);
             }
 
-            foreach (var roleCategory in GetRoleCategories(user)) {
+            foreach (var roleCategory in GuildManager.GetRoleCategories(user)) {
                 AppendPermissions(permissions, roleCategory.Permissions);
             }
 
@@ -65,10 +68,21 @@ namespace LXGaming.DiscordStream.Manager {
         public static List<RoleCategory> GetRoleCategories(IGuildUser user) {
             var roleCategories = new List<RoleCategory>();
 
-            foreach (var roleId in user.RoleIds) {
-                var roleCategory = GetRoleCategory(user.GuildId, roleId);
-                if (roleCategory != null) {
-                    roleCategories.Add(roleCategory);
+            foreach (var role in user.Guild.Roles) {
+                if (user.RoleIds.Contains(role.Id)) {
+                    var roleCategory = GetRoleCategory(user.GuildId, role.Id);
+                    if (roleCategory != null) {
+                        roleCategories.Add(roleCategory);
+                    }
+
+                    continue;
+                }
+
+                if (roleCategories.Count != 0) {
+                    var roleCategory = GetRoleCategory(user.GuildId, role.Id);
+                    if (roleCategory != null && roleCategory.Inheritable) {
+                        roleCategories.Add(roleCategory);
+                    }
                 }
             }
 
@@ -103,7 +117,7 @@ namespace LXGaming.DiscordStream.Manager {
                 }
             }
 
-            var newUserCategory = new UserCategory() {
+            var newUserCategory = new UserCategory {
                 Id = user.Id,
                 Name = user.Username
             };

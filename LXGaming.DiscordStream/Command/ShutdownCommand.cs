@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Discord.Commands;
+using LXGaming.DiscordStream.Command.Attribute;
 using LXGaming.DiscordStream.Util;
 
 namespace LXGaming.DiscordStream.Command {
@@ -9,9 +10,9 @@ namespace LXGaming.DiscordStream.Command {
         [Command("shutdown")]
         [Summary("Shuts down the bot")]
         [RequirePermission("shutdown.base")]
-        public Task ExecuteAsync() {
+        public async Task ExecuteAsync() {
             DiscordStream.Instance.State.Set();
-            return Task.CompletedTask;
+            await Context.Message.DeleteAsync();
         }
     }
 }

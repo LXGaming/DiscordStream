@@ -7,7 +7,7 @@ using LXGaming.DiscordStream.Util;
 using Microsoft.AspNetCore.Mvc;
 using TwitchLib.Webhook;
 using TwitchLib.Webhook.Models;
-using Color = LXGaming.DiscordStream.Data.Color;
+using Color = LXGaming.DiscordStream.Entity.Color;
 
 namespace LXGaming.DiscordStream.Server.Controller {
 
@@ -84,8 +84,8 @@ namespace LXGaming.DiscordStream.Server.Controller {
                     }
 
                     embedBuilder.WithTimestamp(DateTime.Now);
-                    embedBuilder.WithFooter("Powered by " + Reference.Name);
-                    MessageManager.SendMessageAsync(channel, embedBuilder.Build()).Wait();
+                    embedBuilder.WithFooter("Powered by " + DiscordStream.Name);
+                    MessageManager.SendMessageAsync(channel, embedBuilder.Build());
                     return;
                 }
 
@@ -111,8 +111,8 @@ namespace LXGaming.DiscordStream.Server.Controller {
                             embedBuilder.WithColor(MessageManager.GetColor(Color.Warning));
                             embedBuilder.WithDescription("is now playing [**" + game + "**](" + Toolbox.EncodeUrl(TwitchUrl + "directory/game/" + game) + ")");
                             embedBuilder.WithTimestamp(DateTime.Now);
-                            embedBuilder.WithFooter("Powered by " + Reference.Name);
-                            MessageManager.SendMessageAsync(channel, embedBuilder.Build()).Wait();
+                            embedBuilder.WithFooter("Powered by " + DiscordStream.Name);
+                            MessageManager.SendMessageAsync(channel, embedBuilder.Build());
                         }
                     }
 
@@ -121,8 +121,8 @@ namespace LXGaming.DiscordStream.Server.Controller {
                         embedBuilder.WithColor(MessageManager.GetColor(Color.Warning));
                         embedBuilder.WithDescription("has changed their title to **" + stream.Title + "**");
                         embedBuilder.WithTimestamp(DateTime.Now);
-                        embedBuilder.WithFooter("Powered by " + Reference.Name);
-                        MessageManager.SendMessageAsync(channel, embedBuilder.Build()).Wait();
+                        embedBuilder.WithFooter("Powered by " + DiscordStream.Name);
+                        MessageManager.SendMessageAsync(channel, embedBuilder.Build());
                     }
 
                     return;
@@ -135,13 +135,13 @@ namespace LXGaming.DiscordStream.Server.Controller {
                 embedBuilder.WithColor(MessageManager.GetColor(Color.Success));
                 embedBuilder.WithDescription("is currently live streaming [**" + stream.Title + "**](" + userUrl + ")");
                 embedBuilder.WithTimestamp(stream.StartedAt);
-                embedBuilder.WithFooter("Powered by " + Reference.Name);
+                embedBuilder.WithFooter("Powered by " + DiscordStream.Name);
                 if (game != null) {
                     embedBuilder.Description += " ([**" + game + "**](" + Toolbox.EncodeUrl(TwitchUrl + "directory/game/" + game) + "))";
                 }
 
-                MessageManager.SendMessageAsync(channel, embedBuilder.Build()).Wait();
-            } catch (Exception ex) {
+                MessageManager.SendMessageAsync(channel, embedBuilder.Build());
+            } catch (System.Exception ex) {
                 DiscordStream.Instance.Logger.Error("Encountered an error while processing stream", ex);
             }
         }

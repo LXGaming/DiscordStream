@@ -25,7 +25,7 @@ namespace LXGaming.DiscordStream.Integration.Twitch {
                             break;
                         }
                     }
-                } catch (Exception ex) {
+                } catch (System.Exception ex) {
                     DiscordStream.Instance.Logger.Warn("Encountered an error during subscribe task", ex);
                 }
             });
@@ -65,7 +65,7 @@ namespace LXGaming.DiscordStream.Integration.Twitch {
                 TwitchApi = new TwitchAPI();
                 TwitchApi.Settings.ClientId = id;
                 TwitchApi.Settings.Secret = token;
-            } catch (Exception ex) {
+            } catch (System.Exception ex) {
                 DiscordStream.Instance.Logger.Error("Encountered an error while creating TwitchApi", ex);
             }
         }

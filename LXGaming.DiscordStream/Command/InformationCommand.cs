@@ -3,27 +3,29 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using LXGaming.DiscordStream.Command.Attribute;
 using LXGaming.DiscordStream.Manager;
 using LXGaming.DiscordStream.Util;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using TwitchLib.Api;
-using Color = LXGaming.DiscordStream.Data.Color;
+using Color = LXGaming.DiscordStream.Entity.Color;
 
 namespace LXGaming.DiscordStream.Command {
 
-    public class InfoCommand : ModuleBase<SocketCommandContext> {
+    public class InformationCommand : ModuleBase<SocketCommandContext> {
 
-        [Command("info")]
-        [Alias("version")]
+        [Command("information")]
+        [Alias("info", "version")]
         [Summary("Displays bot information")]
-        [RequirePermission("info.base")]
+        [RequirePermission("information.base")]
         public async Task ExecuteAsync() {
             var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithAuthor(Reference.Name + " v" + Reference.Version, AccountManager.DiscordClient.CurrentUser.GetAvatarUrl(), Reference.Source);
+            embedBuilder.WithAuthor(DiscordStream.Name + " v" + DiscordStream.Version, AccountManager.DiscordClient.CurrentUser.GetAvatarUrl(), DiscordStream.Source);
             embedBuilder.WithColor(MessageManager.GetColor(Color.Default));
             embedBuilder.AddField("Uptime", Toolbox.GetTimeString((long) (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalMilliseconds));
             embedBuilder.AddField("Memory", GetHeapSize());
@@ -36,8 +38,10 @@ namespace LXGaming.DiscordStream.Command {
                                                   + "\n- Newtonsoft.Json v" + GetVersion<JsonSerializer>()
                                                   + "\n- TwitchLib v" + GetVersion<TwitchAPI>());
 
-            embedBuilder.WithFooter("Developed by " + Reference.Authors);
-            await MessageManager.SendMessageAsync(Context.Channel, null, embedBuilder.Build());
+            embedBuilder.WithFooter("Developed by " + DiscordStream.Authors);
+            MessageManager.SendTemporaryMessageAsync(Context.Channel, embedBuilder.Build());
+
+            await Task.CompletedTask;
         }
 
         private string GetHeapSize() {
@@ -52,7 +56,7 @@ namespace LXGaming.DiscordStream.Command {
                 return assemblyVersionAttribute.Version;
             }
 
-            var version = assembly.GetName().Version.ToString(3);
+            var version = assembly.GetName().Version?.ToString(3);
             if (!string.IsNullOrWhiteSpace(version)) {
                 return version;
             }

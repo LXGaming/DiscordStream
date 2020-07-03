@@ -56,7 +56,7 @@ namespace LXGaming.DiscordStream.Manager {
                     .Build();
 
                 WebHost.RunAsync();
-            } catch (Exception ex) {
+            } catch (System.Exception ex) {
                 DiscordStream.Instance.Logger.Warn("Encountered an error while preparing WebHost", ex);
             }
         }

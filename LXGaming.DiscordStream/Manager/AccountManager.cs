@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using LXGaming.DiscordStream.Command;
 using LXGaming.DiscordStream.Listener;
 
 namespace LXGaming.DiscordStream.Manager {
@@ -33,7 +32,14 @@ namespace LXGaming.DiscordStream.Manager {
             }
 
             if (!string.IsNullOrWhiteSpace(accountCategory.ActivityName)) {
-                DiscordClient.SetGameAsync(accountCategory.ActivityName, null, accountCategory.ActivityType);
+                // Unsupported ActivityTypes, Defaults to Playing
+                if (accountCategory.ActivityType == ActivityType.CustomStatus || accountCategory.ActivityType == ActivityType.Streaming) {
+                    DiscordClient.SetGameAsync(accountCategory.ActivityName);
+                } else {
+                    DiscordClient.SetGameAsync(accountCategory.ActivityName, null, accountCategory.ActivityType);
+                }
+            } else {
+                DiscordClient.SetActivityAsync(null);
             }
 
             DiscordClient.SetStatusAsync(accountCategory.UserStatus);
@@ -58,8 +64,8 @@ namespace LXGaming.DiscordStream.Manager {
 
                 await DiscordClient.LoginAsync(TokenType.Bot, token);
                 await DiscordClient.StartAsync();
-                await CommandService.AddModulesAsync(Assembly.GetAssembly(typeof(InfoCommand)), null);
-            } catch (Exception ex) {
+                await CommandService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+            } catch (System.Exception ex) {
                 DiscordStream.Instance.Logger.Error("Encountered an error while creating DiscordClient", ex);
             }
         }

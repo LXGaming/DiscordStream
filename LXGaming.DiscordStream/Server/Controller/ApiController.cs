@@ -1,4 +1,3 @@
-using LXGaming.DiscordStream.Util;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -11,12 +10,12 @@ namespace LXGaming.DiscordStream.Server.Controller {
         public JsonResult Index() {
 
             dynamic json = new JObject();
-            json["id"] = Reference.Id;
-            json["name"] = Reference.Name;
-            json["version"] = Reference.Version;
-            json["authors"] = Reference.Authors;
-            json["source"] = Reference.Source;
-            json["website"] = Reference.Website;
+            json["id"] = DiscordStream.Id;
+            json["name"] = DiscordStream.Name;
+            json["version"] = DiscordStream.Version;
+            json["authors"] = DiscordStream.Authors;
+            json["source"] = DiscordStream.Source;
+            json["website"] = DiscordStream.Website;
 
             return new JsonResult(json);
         }

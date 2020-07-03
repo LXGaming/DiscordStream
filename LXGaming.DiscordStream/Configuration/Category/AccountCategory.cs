@@ -17,7 +17,7 @@ namespace LXGaming.DiscordStream.Configuration.Category {
         public string Token = "";
 
         [JsonProperty(PropertyName = "activityName")]
-        public string ActivityName = Reference.Name;
+        public string ActivityName = DiscordStream.Name;
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(PropertyName = "activityType")]

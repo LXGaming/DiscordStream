@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using LXGaming.DiscordStream.Command.Attribute;
 using LXGaming.DiscordStream.Manager;
-using LXGaming.DiscordStream.Util;
-using Color = LXGaming.DiscordStream.Data.Color;
+using Color = LXGaming.DiscordStream.Entity.Color;
 
 namespace LXGaming.DiscordStream.Command {
 
@@ -25,7 +25,8 @@ namespace LXGaming.DiscordStream.Command {
                 embedBuilder.Description += channel;
             }
 
-            await MessageManager.SendMessageAsync(Context.Channel, null, embedBuilder.Build());
+            MessageManager.SendMessageAsync(Context.Channel, null, embedBuilder.Build());
+            await Task.CompletedTask;
         }
     }
 }

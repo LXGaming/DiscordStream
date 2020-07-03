@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace LXGaming.DiscordStream.Data {
+namespace LXGaming.DiscordStream.Entity {
 
     public enum Color {
 

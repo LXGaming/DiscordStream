@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ConcurrentCollections;
 using Newtonsoft.Json;
 
 namespace LXGaming.DiscordStream.Configuration.Category.Integration {
@@ -15,6 +16,6 @@ namespace LXGaming.DiscordStream.Configuration.Category.Integration {
         public ulong NotifyChannel;
 
         [JsonProperty(PropertyName = "channels")]
-        public HashSet<string> Channels = new HashSet<string>();
+        public ConcurrentHashSet<string> Channels = new ConcurrentHashSet<string>();
     }
 }

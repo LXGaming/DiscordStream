@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+using ConcurrentCollections;
 using Newtonsoft.Json;
 
-namespace LXGaming.DiscordStream.Configuration.Category {
+namespace LXGaming.DiscordStream.Configuration.Category.Guild {
 
     public class UserCategory {
 
@@ -12,6 +12,6 @@ namespace LXGaming.DiscordStream.Configuration.Category {
         public string Name = "Unknown";
 
         [JsonProperty(PropertyName = "permissions")]
-        public HashSet<string> Permissions = new HashSet<string>();
+        public ConcurrentHashSet<string> Permissions = new ConcurrentHashSet<string>();
     }
 }

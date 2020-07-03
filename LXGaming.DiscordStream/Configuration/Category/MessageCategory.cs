@@ -1,5 +1,5 @@
-using System.Collections.Generic;
-using LXGaming.DiscordStream.Data;
+using System.Collections.Concurrent;
+using LXGaming.DiscordStream.Entity;
 using Newtonsoft.Json;
 
 namespace LXGaming.DiscordStream.Configuration.Category {
@@ -7,7 +7,7 @@ namespace LXGaming.DiscordStream.Configuration.Category {
     public class MessageCategory {
 
         [JsonProperty(PropertyName = "colors")]
-        public Dictionary<Color, string> Colors = new Dictionary<Color, string>();
+        public ConcurrentDictionary<Color, string> Colors = new ConcurrentDictionary<Color, string>();
 
         [JsonProperty(PropertyName = "deleteInterval")]
         public int DeleteInterval = 60000;

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using ConcurrentCollections;
 using LXGaming.DiscordStream.Configuration.Category;
 using Newtonsoft.Json;
 
@@ -13,7 +13,7 @@ namespace LXGaming.DiscordStream.Configuration {
         public GeneralCategory GeneralCategory = new GeneralCategory();
 
         [JsonProperty(PropertyName = "guilds")]
-        public HashSet<GuildCategory> GuildCategories = new HashSet<GuildCategory>();
+        public ConcurrentHashSet<GuildCategory> GuildCategories = new ConcurrentHashSet<GuildCategory>();
 
         [JsonProperty(PropertyName = "integration")]
         public IntegrationCategory IntegrationCategory = new IntegrationCategory();
